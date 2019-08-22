@@ -7,10 +7,8 @@ import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.wsp.jwt.jwtdemo.domain.User;
 import com.wsp.jwt.jwtdemo.exception.SecurityException;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtBuilder;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -90,7 +88,12 @@ public class JwtUtil {
                     .parseClaimsJws(token).getBody();
             return true;
         }catch (Exception e){
-            throw new SecurityException(1005,"tokey校验失败");
+            if(e instanceof ExpiredJwtException){
+                throw new SecurityException(1005,"tokey超时");
+            }else{
+                throw new SecurityException(1006,"tokey校验失败");
+            }
+
         }
     }
 
